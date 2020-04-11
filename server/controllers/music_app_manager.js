@@ -1,7 +1,7 @@
 var Spotify = require('../services/spotify_service.js');
 var MusicApp = require('../models/MusicApp.js');
 
-const DEV_REDIRECT_URI = "http://localhost:3000/email";
+const DEV_REDIRECT_URI = "http://localhost:3000/callback";
 
 
 var MusicAppManager = (function() {

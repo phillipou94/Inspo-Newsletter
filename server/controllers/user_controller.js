@@ -23,7 +23,7 @@ createUser = (req, res) => {
         .then(() => {
             return res.status(201).json({
                 success: true,
-                id: user._id,
+                _id: user._id,
                 message: 'User created!',
             })
         })
