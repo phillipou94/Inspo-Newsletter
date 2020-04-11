@@ -31,4 +31,4 @@ var User = mongoose.model('User', UserSchema);
 //     return that;
 // })(UserModel);
 
-module.export.User = User;
+module.exports = User;
