@@ -12,7 +12,6 @@ var MusicAppManager = (function() {
         if (app == "spotify") {
             // create music app object
             SpotifyManager.start_authentication().then(response => {
-                console.log("Manager: "+response);
                 return res.status(200).json({
                     success: true,
                     redirect_uri: response.redirect_uri
@@ -27,38 +26,48 @@ var MusicAppManager = (function() {
 
     }
 
-    that.register_music_app = function(app, auth_code) {
+    that.register_music_app = function(req, res) {
+        var app = req.body.app;
+        var auth_code = req.body.auth_code;
         if (app == "spotify") {
             var redirect_uri = DEV_REDIRECT_URI;
-            return new Promise (
-                (resolve, reject) => {
-                    SpotifyManager.get_authentication_tokens(auth_code, redirect_uri)
-                    .then(response => {
-                        var credentials = response.credentials;
-                        var music_app = new MusicApp({
+            SpotifyManager.get_authentication_tokens(auth_code, redirect_uri)
+            .then(response => {
+                var credentials = response.credentials;
+                var music_app = new MusicApp({
+                    app:app,
+                    access_token:credentials.access_token,
+                    refresh_token:credentials.refresh_token,
+                    expires_in:credentials.expires_in
+                });
 
-                            app:app,
-                            access_token:credentials.access_token,
-                            refresh_token:credentials.refresh_token,
-                            expires_in:credentials.expires_in
-                        });
+                console.log("before request");
+                console.log(music_app);
+                music_app.save().then(music_app => {
+                    console.log("resgister_music_app");
+                    console.log(response);
+                    return res.status(200).json({
+                        success: true,
+                        music_app: music_app
+                    })
+                })
+                .catch(error => {
+                    return res.status(404).json({
+                        error,
+                        message: 'could not create music object',
+                    })
+                });
 
-                        console.log("music app:"+music_app);
-                        music_app.save().then(doc => {
-                            
-                            console.log(doc)
-                        })
-                        .catch(err => {
-                            console.error(err)
-                        });
 
 
 
-        
-                    }).catch(error => {
-                        reject({error:error});
-                    });
+            }).catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'could not retrieve authentication tokens',
+                })
             });
+
             
         }
     }
@@ -76,6 +85,9 @@ var SpotifyManager = (function() {
     }
 
     that.get_authentication_tokens = function(auth_code, redirect_uri) {
+        console.log("getting tokens!");
+
+
         return Spotify.AuthService.get_tokens(auth_code,redirect_uri);
     }
 

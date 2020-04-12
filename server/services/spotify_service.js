@@ -59,12 +59,14 @@ var Spotify = (function() {
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         };
 
+        console.log(args);
+
         return new Promise (
             (resolve, reject) => {
                 request.post(uri, args, function(response) {
                     // parsed response body as js object
                     if (response.error || response.error_description) {
-                        console.log("error: "+response)
+                        console.log("error: "+response.error_description)
                         reject({error: response.error_description})
                     }
                     var credentials = {
@@ -72,8 +74,9 @@ var Spotify = (function() {
                         refresh_token: response.refresh_token,
                         expires_in: response.expires_in
                     }
+                    console.log("resolving!!!");
+                    console.log(credentials);
                     resolve({credentials:credentials})
-             
                 });
 
             }
