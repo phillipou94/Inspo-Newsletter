@@ -16,6 +16,7 @@ router.get('/auth/start/:app', MusicAppManager.start_authentication)
 router.post('/auth/register', MusicAppManager.register_music_app)
 
 router.post('/user', UserController.createUser)
+router.put('/user/:id', UserController.updateUser)
 
 
 module.exports = router;

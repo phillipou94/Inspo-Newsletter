@@ -53,10 +53,8 @@ updateUser = async (req, res) => {
                 message: 'User not found!',
             })
         }
-        // movie.name = body.name
-        // movie.time = body.time
-        // movie.rating = body.rating
-        movie
+
+        user
             .save()
             .then(() => {
                 return res.status(200).json({

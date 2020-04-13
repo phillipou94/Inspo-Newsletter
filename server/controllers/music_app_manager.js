@@ -29,20 +29,20 @@ var MusicAppManager = (function() {
     that.register_music_app = function(req, res) {
         var app = req.body.app;
         var auth_code = req.body.auth_code;
+        var user_id = req.body.user_id;
         if (app == "spotify") {
             var redirect_uri = DEV_REDIRECT_URI;
             SpotifyManager.get_authentication_tokens(auth_code, redirect_uri)
             .then(response => {
                 var credentials = response.credentials;
                 var music_app = new MusicApp({
+                    user_id:user_id,
                     app:app,
                     access_token:credentials.access_token,
                     refresh_token:credentials.refresh_token,
                     expires_in:credentials.expires_in
                 });
 
-                console.log("before request");
-                console.log(music_app);
                 music_app.save().then(music_app => {
                     console.log("resgister_music_app");
                     console.log(response);

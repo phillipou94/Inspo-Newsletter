@@ -83,6 +83,10 @@ var Spotify = (function() {
         )
     }
 
+    AuthService.refresh_token = function(refresh_token) {
+        
+    }
+
     that.AuthService = AuthService;
 
     return that;

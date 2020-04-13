@@ -6,6 +6,7 @@ var UserSchema = new Schema({
     name: String,
     email: String,
     default_music_app: String,
+    music_app_id: String,
     created_at: Date,
     updated_at: Date
 });
