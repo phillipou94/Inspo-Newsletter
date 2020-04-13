@@ -19,7 +19,25 @@ var RecommendationController = (function() {
             if (recommendation_type == "SPOTIFY_RANDOM_TOP_10_TRACKS_AND_ARTISTS") {
                 Spotify.ArtistService.get_top_artists(music_app.access_token, time_range = "short_term", limit=10).then(response => {
                     console.log("reocmmendation controller");
-                    console.log(response);
+                    return res.status(200).json({
+                        success: true,
+                        response: response
+                    });
+                    
+                }).catch(error => {
+                    return res.status(404).json({
+                        error,
+                        message: 'could not retrieve top artists',
+                    })
+                });
+
+                Spotify.TrackService.get_top_tracks(music_app.access_token, time_range = "short_term", limit=10).then(response => {
+                    console.log("getting tracks!");
+                    return res.status(200).json({
+                        success: true,
+                        response: response
+                    });
+                    
                 }).catch(error => {
                     return res.status(404).json({
                         error,

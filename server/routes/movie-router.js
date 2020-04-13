@@ -19,7 +19,7 @@ router.post('/auth/register', MusicAppManager.register_music_app)
 router.post('/user', UserController.createUser)
 router.put('/user/:id', UserController.updateUser)
 
-router.post('recommendation/:music_app_id', RecommendationController.create_recommendation)
+router.post('/recommendation/:music_app_id', RecommendationController.create_recommendation)
 
 
 module.exports = router;

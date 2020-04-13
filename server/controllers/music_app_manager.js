@@ -11,7 +11,8 @@ var MusicAppManager = (function() {
         var app = req.params.app;
         if (app == "spotify") {
             // create music app object
-            Spotify.AuthService.request_authorization(Spotify.client_id, "code", DEV_REDIRECT_URI, {}).then(response => {
+            Spotify.AuthService.request_authorization(Spotify.client_id, "code", DEV_REDIRECT_URI, {state:"", scope:"user-top-read"})
+            .then(response => {
                 return res.status(200).json({
                     success: true,
                     redirect_uri: response.redirect_uri
@@ -46,8 +47,6 @@ var MusicAppManager = (function() {
                 music_app.save().then(music_app => {
                     console.log("resgister_music_app");
                     console.log(response);
-
-                    //TODO: Update User with music_app id!
 
                     return res.status(200).json({
                         success: true,
