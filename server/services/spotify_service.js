@@ -121,7 +121,45 @@ var Spotify = (function() {
         
     }
 
+    var ArtistService = {};
+    ArtistService.get_top_artists = function(access_token, time_range = "short_term", limit=10) {
+        var uri = buildUrl('https://api.spotify.com/v1/me/top/artists', {
+            queryParams: {
+                time_range: time_range,
+                limit: 10
+            }
+        });
+
+        var args = {
+            headers: { "Content-Type": "application/json",
+                       "Accept": "application/json",
+                       "Authorization": "Bearer "+access_token
+                     }
+        };
+
+        console.log("URI:"+uri);
+
+
+        return new Promise (
+            (resolve, reject) => {
+                request.get(uri, args, function(response) {
+                    // parsed response body as js object
+                    if (response.error || response.error_description) {
+                        console.log("error: "+response.error_description)
+                        reject({error: response.error_description})
+                    }
+                    console.log("inside artists Service!!");
+                    console.log(response);
+                    resolve(response);
+                });
+
+            }
+        )
+
+    }
+
     that.AuthService = AuthService;
+    that.ArtistService = ArtistService;
 
     return that;
 })();

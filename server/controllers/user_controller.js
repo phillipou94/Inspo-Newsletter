@@ -51,13 +51,18 @@ updateUser = async (req, res) => {
                 message: 'User not found!',
             })
         }
-
+        console.log("bodyy!!");
+        console.log(req.body);
+        user.name = body.name ? body.name : user.name;
+        user.email = body.email ? body.email : user.name;
+        user.default_music_app = body.default_music_app ? body.default_music_app : user.default_music_app;
+        user.music_app_id = body.music_app_id ? body.music_app_id : user.music_app_id;
         user
             .save()
             .then(() => {
                 return res.status(200).json({
                     success: true,
-                    id: user._id,
+                    user: user,
                     message: 'User updated!',
                 })
             })

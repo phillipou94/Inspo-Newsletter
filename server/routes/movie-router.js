@@ -3,6 +3,7 @@ const express = require('express')
 const MovieCtrl = require('../controllers/movie-ctrl')
 const MusicAppManager = require('../controllers/music_app_manager.js');
 const UserController = require('../controllers/user_controller.js');
+const RecommendationController = require('../controllers/recommendation_controller.js');
 
 const router = express.Router()
 
@@ -17,6 +18,8 @@ router.post('/auth/register', MusicAppManager.register_music_app)
 
 router.post('/user', UserController.createUser)
 router.put('/user/:id', UserController.updateUser)
+
+router.post('recommendation/:music_app_id', RecommendationController.create_recommendation)
 
 
 module.exports = router;

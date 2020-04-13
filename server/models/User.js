@@ -11,25 +11,6 @@ var UserSchema = new Schema({
     updated_at: Date
 });
 
-// var User = mongoose.model("User", UserSchema);
-
 var User = mongoose.model('User', UserSchema);
-
-// var User = (function(UserModel) {
-//     var that = {}
-
-//     that.create = function(name, email, default_music_app) {
-        
-//         return new Promise (
-//             (resolve, reject) => {
-                
-//             });
-            
-//     }
-
-
-//     Object.freeze(that);
-//     return that;
-// })(UserModel);
 
 module.exports = User;

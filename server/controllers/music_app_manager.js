@@ -11,7 +11,7 @@ var MusicAppManager = (function() {
         var app = req.params.app;
         if (app == "spotify") {
             // create music app object
-            SpotifyManager.start_authentication().then(response => {
+            Spotify.AuthService.request_authorization(Spotify.client_id, "code", DEV_REDIRECT_URI, {}).then(response => {
                 return res.status(200).json({
                     success: true,
                     redirect_uri: response.redirect_uri
@@ -32,7 +32,7 @@ var MusicAppManager = (function() {
         var user_id = req.body.user_id;
         if (app == "spotify") {
             var redirect_uri = DEV_REDIRECT_URI;
-            SpotifyManager.get_authentication_tokens(auth_code, redirect_uri)
+            Spotify.AuthService.get_tokens(auth_code,redirect_uri)
             .then(response => {
                 var credentials = response.credentials;
                 var music_app = new MusicApp({
@@ -46,6 +46,9 @@ var MusicAppManager = (function() {
                 music_app.save().then(music_app => {
                     console.log("resgister_music_app");
                     console.log(response);
+
+                    //TODO: Update User with music_app id!
+
                     return res.status(200).json({
                         success: true,
                         music_app: music_app
@@ -83,7 +86,7 @@ var MusicAppManager = (function() {
             }
             if (music_app.app == "spotify") {
                 var refresh_token = music_app.refresh_token;
-                SpotifyManager.refresh_token(refresh_token).then(response => {
+                Spotify.AuthService.refresh_token(refresh_token).then(response => {
                     //update access token and expires in
                     var access_token = response.body.access_token;
                     var expires_in = response.body.expires_in;
@@ -94,7 +97,7 @@ var MusicAppManager = (function() {
                         return res.status(200).json({
                             success: true,
                             music_app: music_app,
-                            message: 'mMsic app updated with new token!',
+                            message: 'music app updated with new token!',
                         })
                     })
                     .catch(error => {
@@ -115,36 +118,6 @@ var MusicAppManager = (function() {
             }
         })
         
-    }
-
-    return that;
-})();
-
-var SpotifyManager = (function() {
-    var that = {}
-    
-    that.start_authentication = function() {
-        var spotify_auth_promise = Spotify.AuthService.request_authorization(Spotify.client_id, "code", DEV_REDIRECT_URI, {})
-        return spotify_auth_promise;
-
-    }
-
-    that.get_authentication_tokens = function(auth_code, redirect_uri) {
-        return Spotify.AuthService.get_tokens(auth_code,redirect_uri);
-    }
-
-    that.refresh_token = function(refresh_token) {
-        return Spotify.AuthService.refresh_token(refresh_token)
-    }
-
-
-
-    var needs_token_refresh = function(date_updated,expires_in) {
-        var now = new Date().now();
-        var expiration_date = moment(date_updated).add(expires_in, 'seconds');
-        var needs_token_refresh = moment(now).diff(expiration_date) < 0;
-        console.log("needs token refresh?:"+needs_token_refresh);
-        return needs_token_refresh;
     }
 
     return that;
