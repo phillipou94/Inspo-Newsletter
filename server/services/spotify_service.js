@@ -75,8 +75,6 @@ var Spotify = (function() {
                         refresh_token: response.refresh_token,
                         expires_in: response.expires_in
                     }
-                    console.log("resolving!!!");
-                    console.log(credentials);
                     resolve({credentials:credentials})
                 });
 
@@ -85,7 +83,42 @@ var Spotify = (function() {
     }
 
     AuthService.refresh_token = function(refresh_token) {
+        var uri = buildUrl('https://accounts.spotify.com', {
+            path: 'api/token'
+        });
+        
+        var body = {
+            grant_type: "refresh_token",
+            refresh_token: refresh_token,
+            client_id: that.client_id,
+            client_secret: that.client_secret
+        }
 
+        var args = {
+            data: body,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        };
+
+        return new Promise (
+            (resolve, reject) => {
+                request.post(uri, args, function(response) {
+                    // parsed response body as js object
+                    if (response.error || response.error_description) {
+                        console.log("error: "+response.error_description)
+                        reject({error: response.error_description})
+                    }
+                    var credentials = {
+                        access_token : response.access_token,
+                        expires_in: response.expires_in
+                    }
+                    console.log("resolving!!!");
+                    console.log(credentials);
+                    resolve({credentials:credentials})
+                });
+
+            }
+        )
+        
     }
 
     that.AuthService = AuthService;

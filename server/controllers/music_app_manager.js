@@ -72,6 +72,51 @@ var MusicAppManager = (function() {
         }
     }
 
+    that.refresh_token = function(req, res) {
+        var music_app_id = req.body.music_app_id;
+        MusicApp.findOne({ _id: music_app_id }, (err, music_app) => {
+            if (err) {
+                return res.status(404).json({
+                    err,
+                    message: 'MusicApp not found!',
+                })
+            }
+            if (music_app.app == "spotify") {
+                var refresh_token = music_app.refresh_token;
+                SpotifyManager.refresh_token(refresh_token).then(response => {
+                    //update access token and expires in
+                    var access_token = response.body.access_token;
+                    var expires_in = response.body.expires_in;
+                    
+                    music_app.access_token = access_token;
+                    music_app.expires_in = expires_in;
+                    music_app.save().then(() => {
+                        return res.status(200).json({
+                            success: true,
+                            music_app: music_app,
+                            message: 'mMsic app updated with new token!',
+                        })
+                    })
+                    .catch(error => {
+                        return res.status(404).json({
+                            error,
+                            message: 'Music app not updated!',
+                        })
+                    })
+
+
+                }).catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Could not refresh token',
+                })
+            });
+                
+            }
+        })
+        
+    }
+
     return that;
 })();
 
@@ -86,6 +131,10 @@ var SpotifyManager = (function() {
 
     that.get_authentication_tokens = function(auth_code, redirect_uri) {
         return Spotify.AuthService.get_tokens(auth_code,redirect_uri);
+    }
+
+    that.refresh_token = function(refresh_token) {
+        return Spotify.AuthService.refresh_token(refresh_token)
     }
 
 
