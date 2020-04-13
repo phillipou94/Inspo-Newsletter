@@ -6,13 +6,11 @@ createUser = (req, res) => {
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: 'You must provide a movie',
+            error: 'You must provide a user object',
         })
     }
 
     const user = new User(body)
-    console.log("Boooommm");
-    console.log(user);
 
     if (!user) {
         return res.status(400).json({ success: false, error: err })

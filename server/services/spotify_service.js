@@ -1,5 +1,6 @@
 var buildUrl = require('build-url');
 var Client = require('node-rest-client').Client;
+var moment = require('moment');
  
 var client = new Client();
 var request = new Client();
@@ -84,7 +85,7 @@ var Spotify = (function() {
     }
 
     AuthService.refresh_token = function(refresh_token) {
-        
+
     }
 
     that.AuthService = AuthService;

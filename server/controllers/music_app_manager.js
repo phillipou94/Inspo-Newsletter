@@ -85,10 +85,17 @@ var SpotifyManager = (function() {
     }
 
     that.get_authentication_tokens = function(auth_code, redirect_uri) {
-        console.log("getting tokens!");
-
-
         return Spotify.AuthService.get_tokens(auth_code,redirect_uri);
+    }
+
+
+
+    var needs_token_refresh = function(date_updated,expires_in) {
+        var now = new Date().now();
+        var expiration_date = moment(date_updated).add(expires_in, 'seconds');
+        var needs_token_refresh = moment(now).diff(expiration_date) < 0;
+        console.log("needs token refresh?:"+needs_token_refresh);
+        return needs_token_refresh;
     }
 
     return that;
