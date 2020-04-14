@@ -59,7 +59,6 @@ var Spotify = (function() {
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         };
 
-        console.log(args);
 
         return new Promise (
             (resolve, reject) => {
@@ -110,8 +109,7 @@ var Spotify = (function() {
                         access_token : response.access_token,
                         expires_in: response.expires_in
                     }
-                    console.log("resolving!!!");
-                    console.log(credentials);
+
                     resolve({credentials:credentials})
                 });
 
@@ -136,8 +134,6 @@ var Spotify = (function() {
                      }
         };
 
-        console.log("URI:"+uri);
-
 
         return new Promise (
             (resolve, reject) => {
@@ -147,8 +143,6 @@ var Spotify = (function() {
                         console.log("error: "+response.error_description)
                         reject({error: response.error_description})
                     }
-                    console.log("inside artists Service!!");
-                    console.log(response);
                     var artists = response.items.map(item => {
                         return Artist(item);
                     });
@@ -186,9 +180,6 @@ var Spotify = (function() {
                         console.log("error: "+response.error_description)
                         reject({error: response.error_description})
                     }
-                    console.log("inside Tracks Service!!");
-                    console.log(response);
-                    resolve({tracks:response.items});
                     var tracks = response.items.map(item => {
                         return Track(item);
                     });
@@ -201,9 +192,53 @@ var Spotify = (function() {
 
     }
 
+    var RecommendationService = {}
+    RecommendationService.get_recommendations = function(access_token, seed_artist_ids, seed_track_ids) {
+        var uri = buildUrl('https://api.spotify.com/v1/recommendations', {
+            queryParams: {
+                seed_artists: seed_artist_ids,
+                seed_tracks: seed_track_ids
+            }
+        });
+
+        var args = {
+            headers: { "Content-Type": "application/json",
+                       "Accept": "application/json",
+                       "Authorization": "Bearer "+access_token
+                     }
+        };
+
+        console.log("URI:"+uri);
+        console.log(args);
+
+        return new Promise (
+            (resolve, reject) => {
+                request.get(uri, args, function(response) {
+                    // parsed response body as js object
+                    if (response.error || response.error_description) {
+                        console.log("error: "+response.error_description)
+                        reject({error: response.error_description})
+                    }
+                    
+                    console.log(response);
+                    var tracks = response.tracks.map(item => {
+                        return Track(item);
+                    });
+                    
+                    resolve({tracks:tracks});
+                });
+
+            }
+        )
+        
+
+       
+    }
+
     that.AuthService = AuthService;
     that.ArtistService = ArtistService;
     that.TrackService = TrackService;
+    that.RecommendationService = RecommendationService;
 
     return that;
 })();

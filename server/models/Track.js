@@ -1,5 +1,6 @@
 var Track = function(jsonObject) {
-    var that = Object.create(Artist.prototype);
+    var that = Object.create(Track.prototype);
+
     that.artists = jsonObject.artists;
     that.external_ids = jsonObject.external_ids;
     that.external_urls = jsonObject.external_urls;
@@ -10,6 +11,7 @@ var Track = function(jsonObject) {
     that.preview_url = jsonObject.preview_url;
     that.type = jsonObject.type;
     that.uri = jsonObject.uri;
+    
     Object.freeze(that);
     return that;
  };
